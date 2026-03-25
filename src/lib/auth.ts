@@ -4,10 +4,9 @@ import type { NextAuthConfig } from "next-auth";
 import { prisma } from "./prisma";
 
 export const authConfig: NextAuthConfig = {
-  adapter: PrismaAdapter(prisma),
+  ...(process.env.DATABASE_URL ? { adapter: PrismaAdapter(prisma) } : {}),
   providers: [
     // Kakao, Google, Apple providers will be configured when credentials are available
-    // For now, a simple credentials provider for development
   ],
   session: {
     strategy: "jwt",
