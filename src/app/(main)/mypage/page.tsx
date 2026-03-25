@@ -14,52 +14,55 @@ import {
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ROUTES } from "@/constants";
+import { useTranslation } from "@/lib/i18n";
 
-const MENU_ITEMS = [
+const MENU_ITEMS_CONFIG = [
   {
     icon: Ticket,
-    label: "내 판매 목록",
+    labelKey: "mypage.listings",
     href: ROUTES.MY_LISTINGS,
     count: 3,
   },
   {
     icon: Heart,
-    label: "찜한 티켓",
+    labelKey: "mypage.favorites",
     href: ROUTES.MYPAGE,
     count: 5,
   },
   {
     icon: History,
-    label: "거래 내역",
+    labelKey: "mypage.transactions",
     href: ROUTES.MYPAGE,
     count: 12,
   },
   {
     icon: Star,
-    label: "받은 후기",
+    labelKey: "mypage.reviews",
     href: ROUTES.MYPAGE,
     count: 8,
   },
   {
     icon: Wallet,
-    label: "지갑 관리",
+    labelKey: "mypage.wallet",
     href: ROUTES.MY_WALLET,
     badge: "BSC",
   },
   {
     icon: Crown,
-    label: "멤버십",
+    labelKey: "mypage.membership",
     href: ROUTES.MEMBERSHIP,
     badge: "Basic",
   },
   {
     icon: Settings,
-    label: "설정",
+    labelKey: "mypage.settings",
     href: ROUTES.MY_SETTINGS,
   },
 ];
 
 export default function MyPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       {/* Profile */}
@@ -72,9 +75,9 @@ export default function MyPage() {
             <h1 className="text-lg font-bold text-text-primary">뮤덕이</h1>
             <p className="text-sm text-text-secondary">museum@metaducks.io</p>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="verified">인증됨</Badge>
+              <Badge variant="verified">{t("mypage.verified")}</Badge>
               <span className="text-xs text-text-secondary">
-                신뢰도 ⭐ 4.8
+                {t("mypage.trust")} ⭐ 4.8
               </span>
             </div>
           </div>
