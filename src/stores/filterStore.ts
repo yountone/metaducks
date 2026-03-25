@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { SeatGrade, TransferType } from "@/types";
 
+export type SortBy = "latest" | "price_asc" | "price_desc" | "popular";
+
 interface FilterState {
   eventId: string | null;
   showDate: string | null;
@@ -11,6 +13,7 @@ interface FilterState {
   consecutiveOnly: boolean;
   underFaceValueOnly: boolean;
   searchQuery: string;
+  sortBy: SortBy;
   setEventId: (id: string | null) => void;
   setShowDate: (date: string | null) => void;
   setSeatGrade: (grade: SeatGrade | null) => void;
@@ -20,6 +23,7 @@ interface FilterState {
   setConsecutiveOnly: (v: boolean) => void;
   setUnderFaceValueOnly: (v: boolean) => void;
   setSearchQuery: (q: string) => void;
+  setSortBy: (sort: SortBy) => void;
   resetFilters: () => void;
 }
 
@@ -33,6 +37,7 @@ const initialState = {
   consecutiveOnly: false,
   underFaceValueOnly: false,
   searchQuery: "",
+  sortBy: "latest" as SortBy,
 };
 
 export const useFilterStore = create<FilterState>((set) => ({
@@ -46,5 +51,6 @@ export const useFilterStore = create<FilterState>((set) => ({
   setConsecutiveOnly: (v) => set({ consecutiveOnly: v }),
   setUnderFaceValueOnly: (v) => set({ underFaceValueOnly: v }),
   setSearchQuery: (q) => set({ searchQuery: q }),
+  setSortBy: (sort) => set({ sortBy: sort }),
   resetFilters: () => set(initialState),
 }));

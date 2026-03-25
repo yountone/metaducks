@@ -1,133 +1,50 @@
 "use client";
 
+import { useEffect, useRef, useCallback } from "react";
 import { TicketCard } from "@/components/tickets/TicketCard";
 import { TicketFilter } from "@/components/tickets/TicketFilter";
 import { CompareDrawer } from "@/components/tickets/CompareDrawer";
-import { Badge } from "@/components/ui/Badge";
-import { Shield } from "lucide-react";
-import type { TicketListItem } from "@/types";
+import { useTickets } from "@/hooks/useTickets";
+import { useFilterStore, type SortBy } from "@/stores/filterStore";
+import { useCompareStore } from "@/stores/compareStore";
+import { Shield, Loader2 } from "lucide-react";
 
-const SAMPLE_TICKETS: TicketListItem[] = [
-  {
-    id: "1",
-    eventTitle: "데스노트 2025 - 서울",
-    showDate: "2026-04-18T14:00:00",
-    section: "C구역",
-    row: "10열",
-    floor: "2층(2F)",
-    seatGrade: "A",
-    transferType: "PIN",
-    quantity: 1,
-    isConsecutive: false,
-    originalPrice: 80000,
-    askingPrice: 80000,
-    isUnderFaceValue: true,
-    isVerified: true,
-    sellerNickname: "뮤덕이",
-    sellerTrustScore: 4.8,
-    createdAt: "2026-03-20T10:00:00",
-  },
-  {
-    id: "2",
-    eventTitle: "데스노트 2025 - 서울",
-    showDate: "2026-04-11T00:00:00",
-    section: "A구역",
-    row: "10열",
-    floor: "2층(2F)",
-    seatGrade: "A",
-    position: "왼쪽",
-    transferType: "PIN",
-    quantity: 1,
-    isConsecutive: false,
-    originalPrice: 80000,
-    askingPrice: 100000,
-    isUnderFaceValue: false,
-    isVerified: true,
-    sellerNickname: "티켓마스터",
-    sellerTrustScore: 4.5,
-    createdAt: "2026-03-19T15:00:00",
-  },
-  {
-    id: "3",
-    eventTitle: "데스노트 2025 - 서울",
-    showDate: "2026-04-01T14:00:00",
-    section: "A구역",
-    row: "12열",
-    floor: "2층(2F)",
-    seatGrade: "A",
-    cast: "고은성 김준수",
-    transferType: "DIRECT",
-    quantity: 2,
-    isConsecutive: true,
-    originalPrice: 80000,
-    askingPrice: 110000,
-    isUnderFaceValue: false,
-    isVerified: false,
-    sellerNickname: "뮤지컬러버",
-    sellerTrustScore: 4.2,
-    createdAt: "2026-03-18T09:00:00",
-  },
-  {
-    id: "4",
-    eventTitle: "데스노트 2025 - 서울",
-    showDate: "2026-04-11T14:00:00",
-    section: "A구역",
-    row: "11열",
-    floor: "2층(2F)",
-    seatGrade: "A",
-    cast: "김준수 고은성",
-    transferType: "PIN",
-    quantity: 1,
-    isConsecutive: false,
-    originalPrice: 80000,
-    askingPrice: 95000,
-    isUnderFaceValue: false,
-    isVerified: true,
-    sellerNickname: "행복한덕후",
-    sellerTrustScore: 4.9,
-    createdAt: "2026-03-17T20:00:00",
-  },
-  {
-    id: "5",
-    eventTitle: "위키드 - 서울",
-    showDate: "2026-04-20T19:00:00",
-    section: "A구역",
-    row: "5열",
-    floor: "1층(1F)",
-    seatGrade: "R",
-    transferType: "PIN",
-    quantity: 2,
-    isConsecutive: true,
-    originalPrice: 140000,
-    askingPrice: 130000,
-    isUnderFaceValue: true,
-    isVerified: true,
-    sellerNickname: "위키드팬",
-    sellerTrustScore: 4.7,
-    createdAt: "2026-03-16T11:00:00",
-  },
-  {
-    id: "6",
-    eventTitle: "레미제라블 - 서울",
-    showDate: "2026-05-01T14:00:00",
-    section: "B구역",
-    row: "3열",
-    floor: "1층(1F)",
-    seatGrade: "S",
-    transferType: "DIRECT",
-    quantity: 1,
-    isConsecutive: false,
-    originalPrice: 120000,
-    askingPrice: 110000,
-    isUnderFaceValue: true,
-    isVerified: false,
-    sellerNickname: "레미팬",
-    sellerTrustScore: 4.3,
-    createdAt: "2026-03-15T14:00:00",
-  },
+const SORT_OPTIONS: { value: SortBy; label: string }[] = [
+  { value: "latest", label: "최신 등록순" },
+  { value: "price_asc", label: "가격 낮은순" },
+  { value: "price_desc", label: "가격 높은순" },
+  { value: "popular", label: "인기순" },
 ];
 
 export default function TicketsPage() {
+  const { setSortBy, sortBy } = useFilterStore();
+  const compareItems = useCompareStore((s) => s.items);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useTickets();
+
+  // Infinite scroll
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (observerRef.current) observerRef.current.disconnect();
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      });
+      if (node) observerRef.current.observe(node);
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
+
+  const tickets = data?.pages.flatMap((p) => p.items) ?? [];
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Title */}
@@ -151,32 +68,74 @@ export default function TicketsPage() {
 
         {/* Main content */}
         <div className="flex-1">
-          {/* Results count */}
+          {/* Results count & sort */}
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-text-secondary">
-              총 <span className="font-medium text-text-primary">{SAMPLE_TICKETS.length}</span>개 티켓
+              총{" "}
+              <span className="font-medium text-text-primary">
+                {tickets.length}
+              </span>
+              개 티켓
             </p>
-            <select className="h-8 px-2 text-xs border border-border rounded-lg bg-white">
-              <option>최신 등록순</option>
-              <option>가격 낮은순</option>
-              <option>가격 높은순</option>
-              <option>공연일 가까운순</option>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortBy)}
+              className="h-8 px-2 text-xs border border-border rounded-lg bg-white"
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
             </select>
           </div>
 
+          {/* Loading */}
+          {isLoading && (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+          )}
+
+          {/* Error */}
+          {isError && (
+            <div className="text-center py-12">
+              <p className="text-text-secondary text-sm">
+                티켓을 불러오는 중 오류가 발생했습니다
+              </p>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!isLoading && !isError && tickets.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-text-secondary text-sm">
+                조건에 맞는 티켓이 없습니다
+              </p>
+            </div>
+          )}
+
           {/* Ticket list */}
           <div className="space-y-3">
-            {SAMPLE_TICKETS.map((ticket) => (
+            {tickets.map((ticket) => (
               <TicketCard key={ticket.id} ticket={ticket} />
             ))}
           </div>
+
+          {/* Infinite scroll trigger */}
+          <div ref={loadMoreRef} className="h-4" />
+          {isFetchingNextPage && (
+            <div className="flex justify-center py-4">
+              <Loader2 className="w-5 h-5 animate-spin text-primary" />
+            </div>
+          )}
         </div>
 
         {/* Right sidebar - desktop only */}
         <div className="hidden xl:block w-52 shrink-0 space-y-4">
           <div className="border border-border rounded-xl p-4">
             <h3 className="font-medium text-sm text-text-primary mb-2">
-              상품 비교 0
+              상품 비교 {compareItems.length}
             </h3>
             <p className="text-xs text-text-secondary">
               비교담기를 눌러 티켓을 비교해보세요

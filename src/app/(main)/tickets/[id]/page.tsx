@@ -1,42 +1,16 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
-import { Shield, Flag, ChevronRight } from "lucide-react";
+import { Shield, Flag, ChevronRight, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { PaymentModal } from "@/components/payment/PaymentModal";
 import { formatPrice, formatShowDate } from "@/lib/utils";
+import { useTicketDetail } from "@/hooks/useTickets";
+import { useCompareStore } from "@/stores/compareStore";
 import { ROUTES } from "@/constants";
-
-const TICKET_DATA = {
-  id: "1",
-  productNumber: "7238906878245",
-  eventTitle: "데스노트 2025 - 서울",
-  category: "뮤지컬/연극",
-  eventName: "데스노트",
-  showDate: "2026-04-18T14:00:00",
-  section: "C구역",
-  row: "10열",
-  seatNumber: null,
-  floor: "2층(2F)",
-  seatGrade: "A",
-  cast: null,
-  transferType: "PIN" as const,
-  quantity: 1,
-  originalPrice: 80000,
-  askingPrice: 80000,
-  isUnderFaceValue: true,
-  isVerified: true,
-  isConsecutive: false,
-  description: "개인 사정으로 양도합니다. 연락 주시면 빠르게 답변드릴게요.",
-  viewCount: 42,
-  sellerNickname: "뮤덕이",
-  sellerTrustScore: 4.8,
-  sellerId: "user1",
-  imageUrls: [],
-  createdAt: "2026-03-20T10:00:00",
-};
 
 export default function TicketDetailPage({
   params,
@@ -44,7 +18,54 @@ export default function TicketDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const ticket = TICKET_DATA;
+  const { data: ticket, isLoading, isError } = useTicketDetail(id);
+  const [showPayment, setShowPayment] = useState(false);
+  const { toggleItem, hasItem } = useCompareStore();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError || !ticket) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-text-secondary">티켓을 찾을 수 없습니다</p>
+        <Link href={ROUTES.TICKETS} className="text-primary text-sm mt-2 inline-block">
+          목록으로 돌아가기
+        </Link>
+      </div>
+    );
+  }
+
+  const isInCompare = hasItem(ticket.id);
+
+  const handleCompare = () => {
+    toggleItem({
+      id: ticket.id,
+      eventTitle: ticket.eventTitle,
+      showDate: ticket.showDate,
+      section: ticket.section,
+      row: ticket.row,
+      floor: ticket.floor,
+      seatGrade: ticket.seatGrade as "VIP" | "R" | "S" | "A" | "B",
+      position: ticket.position,
+      cast: ticket.cast,
+      transferType: ticket.transferType as "PIN" | "DIRECT" | "BOTH",
+      quantity: ticket.quantity,
+      isConsecutive: ticket.isConsecutive,
+      originalPrice: ticket.originalPrice,
+      askingPrice: ticket.askingPrice,
+      isUnderFaceValue: ticket.isUnderFaceValue,
+      isVerified: ticket.isVerified,
+      sellerNickname: ticket.sellerNickname,
+      sellerTrustScore: ticket.sellerTrustScore,
+      createdAt: ticket.createdAt,
+    });
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 pb-24">
@@ -52,7 +73,7 @@ export default function TicketDetailPage({
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-bold text-text-primary">상품 정보</h1>
         <span className="text-xs text-text-secondary">
-          상품번호 {ticket.productNumber}
+          상품번호 {ticket.id}
         </span>
       </div>
 
@@ -79,9 +100,7 @@ export default function TicketDetailPage({
 
         {/* Breadcrumb */}
         <div className="flex items-center gap-1 text-xs text-text-secondary mb-1">
-          <span>{ticket.category}</span>
-          <ChevronRight className="w-3 h-3" />
-          <span>{ticket.eventName}</span>
+          <span>뮤지컬/연극</span>
           <ChevronRight className="w-3 h-3" />
           <span>{ticket.eventTitle}</span>
         </div>
@@ -100,6 +119,7 @@ export default function TicketDetailPage({
         </h2>
         <p className="text-sm text-text-secondary mb-3">
           {ticket.seatGrade} | {ticket.floor}
+          {ticket.position && ` | ${ticket.position}`}
         </p>
 
         {/* Cast */}
@@ -128,7 +148,9 @@ export default function TicketDetailPage({
               <span className="text-sm text-text-primary">
                 {ticket.transferType === "PIN"
                   ? "PIN(E-ticket) 거래"
-                  : "현장 거래"}
+                  : ticket.transferType === "DIRECT"
+                    ? "현장 거래"
+                    : "PIN/현장 거래"}
               </span>
             </label>
             {ticket.transferType === "PIN" && (
@@ -163,6 +185,7 @@ export default function TicketDetailPage({
               <span className="text-sm text-text-secondary">수량</span>
               <span className="text-sm font-medium text-text-primary">
                 {ticket.quantity}매
+                {ticket.isConsecutive && "(연석)"}
               </span>
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
@@ -207,15 +230,52 @@ export default function TicketDetailPage({
         </div>
       </Card>
 
+      {/* View count */}
+      <div className="text-right mb-4">
+        <span className="text-xs text-text-secondary">
+          조회 {ticket.viewCount}
+        </span>
+      </div>
+
       {/* Fixed bottom action bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border p-4 flex items-center gap-3 max-w-3xl mx-auto z-40">
-        <Button variant="outline" size="lg" className="flex-shrink-0">
-          + 비교담기
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex-shrink-0"
+          onClick={handleCompare}
+        >
+          {isInCompare ? "✓ 비교중" : "+ 비교담기"}
         </Button>
-        <Button size="lg" variant="secondary" className="flex-1">
+        <Button
+          size="lg"
+          variant="secondary"
+          className="flex-1"
+          onClick={() => setShowPayment(true)}
+        >
           구매하기
         </Button>
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={showPayment}
+        onClose={() => setShowPayment(false)}
+        amount={ticket.askingPrice * ticket.quantity}
+        title={`${ticket.eventTitle} - ${ticket.section} ${ticket.row}`}
+        onPaymentSuccess={(txHash, method) => {
+          // Create transaction via API
+          fetch("/api/transactions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ticketId: ticket.id,
+              paymentMethod: method,
+              txHash,
+            }),
+          });
+        }}
+      />
     </div>
   );
 }

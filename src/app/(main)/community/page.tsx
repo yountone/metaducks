@@ -2,75 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, Eye, Heart, MessageSquare } from "lucide-react";
+import { Plus, Eye, Heart, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { POST_CATEGORIES, ROUTES } from "@/constants";
 import { formatRelativeTime } from "@/lib/utils";
-
-const SAMPLE_POSTS = [
-  {
-    id: "p1",
-    title: "데스노트 4/18 마티네 후기 🎵",
-    category: "REVIEW",
-    authorNickname: "뮤덕이",
-    viewCount: 234,
-    likeCount: 15,
-    commentCount: 8,
-    createdAt: "2026-03-24T14:00:00",
-  },
-  {
-    id: "p2",
-    title: "위키드 좌석 시야 질문이요",
-    category: "QUESTION",
-    authorNickname: "위키드팬",
-    viewCount: 89,
-    likeCount: 3,
-    commentCount: 12,
-    createdAt: "2026-03-24T10:00:00",
-  },
-  {
-    id: "p3",
-    title: "레미제라블 5/1 동행 구합니다",
-    category: "COMPANION",
-    authorNickname: "레미팬",
-    viewCount: 156,
-    likeCount: 7,
-    commentCount: 5,
-    createdAt: "2026-03-23T18:00:00",
-  },
-  {
-    id: "p4",
-    title: "PIN 거래 시 주의사항 정리",
-    category: "INFO",
-    authorNickname: "안전거래",
-    viewCount: 512,
-    likeCount: 42,
-    commentCount: 18,
-    createdAt: "2026-03-22T09:00:00",
-  },
-  {
-    id: "p5",
-    title: "오늘 시카고 첫 공연 다녀왔어요",
-    category: "FREE",
-    authorNickname: "시카고매니아",
-    viewCount: 178,
-    likeCount: 21,
-    commentCount: 9,
-    createdAt: "2026-03-21T22:00:00",
-  },
-];
+import { usePosts } from "@/hooks/useCommunity";
 
 const categoryLabel = (value: string) =>
   POST_CATEGORIES.find((c) => c.value === value)?.label || value;
 
 export default function CommunityPage() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
+  const { data, isLoading, isError } = usePosts(
+    activeCategory !== "ALL" ? activeCategory : undefined
+  );
 
-  const filteredPosts =
-    activeCategory === "ALL"
-      ? SAMPLE_POSTS
-      : SAMPLE_POSTS.filter((p) => p.category === activeCategory);
+  const posts = data?.pages.flatMap((p) => p.items) ?? [];
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
@@ -112,9 +60,34 @@ export default function CommunityPage() {
         ))}
       </div>
 
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        </div>
+      )}
+
+      {/* Error */}
+      {isError && (
+        <div className="text-center py-12">
+          <p className="text-text-secondary text-sm">
+            게시글을 불러오는 중 오류가 발생했습니다
+          </p>
+        </div>
+      )}
+
+      {/* Empty */}
+      {!isLoading && !isError && posts.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-text-secondary text-sm">
+            아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!
+          </p>
+        </div>
+      )}
+
       {/* Post list */}
       <div className="space-y-2">
-        {filteredPosts.map((post) => (
+        {posts.map((post) => (
           <Link key={post.id} href={ROUTES.POST_DETAIL(post.id)}>
             <Card className="hover:border-primary/30">
               <div className="flex items-start justify-between">

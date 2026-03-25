@@ -292,7 +292,49 @@ export default function TicketNewPage() {
             <Button variant="outline" size="lg" className="flex-1" onClick={prevStep}>
               이전
             </Button>
-            <Button size="lg" className="flex-1" onClick={nextStep}>
+            <Button
+              size="lg"
+              className="flex-1"
+              onClick={async () => {
+                try {
+                  const event = SAMPLE_EVENTS.find(
+                    (e) => e.id === selectedEvent
+                  );
+                  const showDateISO = formData.showDate && formData.showTime
+                    ? new Date(`${formData.showDate}T${formData.showTime}`).toISOString()
+                    : new Date(formData.showDate).toISOString();
+                  const res = await fetch("/api/tickets", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      eventId: selectedEvent,
+                      title: `${event?.title || "공연"} - ${formData.section} ${formData.row}`,
+                      originalPrice: formData.originalPrice,
+                      askingPrice: formData.askingPrice,
+                      quantity: formData.quantity,
+                      section: formData.section,
+                      row: formData.row,
+                      seatNumber: formData.seatNumber || undefined,
+                      floor: formData.floor,
+                      seatGrade: formData.seatGrade,
+                      showDate: showDateISO,
+                      cast: formData.cast || undefined,
+                      description: formData.description || undefined,
+                      transferType: formData.transferType,
+                      isConsecutive: formData.isConsecutive,
+                    }),
+                  });
+                  if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.error || "등록에 실패했습니다");
+                    return;
+                  }
+                  nextStep();
+                } catch {
+                  alert("등록 중 오류가 발생했습니다");
+                }
+              }}
+            >
               등록하기
             </Button>
           </div>

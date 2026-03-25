@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Web3Provider } from "@/lib/web3-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +24,9 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <Web3Provider>{children}</Web3Provider>
+      </body>
     </html>
   );
 }
