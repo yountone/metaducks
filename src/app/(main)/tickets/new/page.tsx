@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { SEAT_GRADES, TRANSFER_TYPES } from "@/constants";
-
-const STEPS = ["공연 선택", "좌석 정보", "가격/거래", "완료"];
+import { useTranslation } from "@/lib/i18n";
 
 const SAMPLE_EVENTS = [
   { id: "ev1", title: "데스노트 2025 - 서울", venue: "블루스퀘어 신한카드홀" },
@@ -17,6 +16,8 @@ const SAMPLE_EVENTS = [
 ];
 
 export default function TicketNewPage() {
+  const { t } = useTranslation();
+  const STEPS = [t("ticketNew.step1"), t("ticketNew.step2"), t("ticketNew.step3"), t("ticketNew.step4")];
   const [step, setStep] = useState(0);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ export default function TicketNewPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-bold text-text-primary mb-6">티켓 판매 등록</h1>
+      <h1 className="text-xl font-bold text-text-primary mb-6">{t("ticketNew.title")}</h1>
 
       {/* Progress */}
       <div className="flex items-center gap-1 mb-8">
@@ -67,7 +68,7 @@ export default function TicketNewPage() {
       {step === 0 && (
         <div className="space-y-3">
           <h2 className="text-base font-medium text-text-primary mb-4">
-            어떤 공연의 티켓인가요?
+            {t("ticketNew.whichShow")}
           </h2>
           {SAMPLE_EVENTS.map((event) => (
             <Card
@@ -89,7 +90,7 @@ export default function TicketNewPage() {
             onClick={nextStep}
             disabled={!selectedEvent}
           >
-            다음
+            {t("ticketNew.next")}
           </Button>
         </div>
       )}
@@ -98,11 +99,11 @@ export default function TicketNewPage() {
       {step === 1 && (
         <div className="space-y-4">
           <h2 className="text-base font-medium text-text-primary mb-4">
-            좌석 정보를 입력해주세요
+            {t("ticketNew.seatInfo")}
           </h2>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="공연 날짜"
+              label={t("ticketNew.showDate")}
               type="date"
               value={formData.showDate}
               onChange={(e) =>
@@ -110,7 +111,7 @@ export default function TicketNewPage() {
               }
             />
             <Input
-              label="공연 시간"
+              label={t("ticketNew.showTime")}
               type="time"
               value={formData.showTime}
               onChange={(e) =>
@@ -120,16 +121,16 @@ export default function TicketNewPage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="구역"
-              placeholder="예: A구역"
+              label={t("ticketNew.section")}
+              placeholder={t("ticketNew.sectionPlaceholder")}
               value={formData.section}
               onChange={(e) =>
                 setFormData({ ...formData, section: e.target.value })
               }
             />
             <Input
-              label="열"
-              placeholder="예: 10열"
+              label={t("ticketNew.row")}
+              placeholder={t("ticketNew.rowPlaceholder")}
               value={formData.row}
               onChange={(e) =>
                 setFormData({ ...formData, row: e.target.value })
@@ -138,16 +139,16 @@ export default function TicketNewPage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="좌석 번호 (선택)"
-              placeholder="예: 15번"
+              label={t("ticketNew.seatNo")}
+              placeholder={t("ticketNew.seatNoPlaceholder")}
               value={formData.seatNumber}
               onChange={(e) =>
                 setFormData({ ...formData, seatNumber: e.target.value })
               }
             />
             <Input
-              label="층"
-              placeholder="예: 2층(2F)"
+              label={t("ticketNew.floor")}
+              placeholder={t("ticketNew.floorPlaceholder")}
               value={formData.floor}
               onChange={(e) =>
                 setFormData({ ...formData, floor: e.target.value })
@@ -156,7 +157,7 @@ export default function TicketNewPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1">
-              등급
+              {t("ticketNew.grade")}
             </label>
             <select
               value={formData.seatGrade}
@@ -173,8 +174,8 @@ export default function TicketNewPage() {
             </select>
           </div>
           <Input
-            label="캐스트 (선택)"
-            placeholder="예: 고은성 김준수"
+            label={t("ticketNew.cast")}
+            placeholder={t("ticketNew.castPlaceholder")}
             value={formData.cast}
             onChange={(e) =>
               setFormData({ ...formData, cast: e.target.value })
@@ -182,10 +183,10 @@ export default function TicketNewPage() {
           />
           <div className="flex gap-2 mt-4">
             <Button variant="outline" size="lg" className="flex-1" onClick={prevStep}>
-              이전
+              {t("ticketNew.prev")}
             </Button>
             <Button size="lg" className="flex-1" onClick={nextStep}>
-              다음
+              {t("ticketNew.next")}
             </Button>
           </div>
         </div>
@@ -195,11 +196,11 @@ export default function TicketNewPage() {
       {step === 2 && (
         <div className="space-y-4">
           <h2 className="text-base font-medium text-text-primary mb-4">
-            가격과 거래 방식을 설정해주세요
+            {t("ticketNew.priceInfo")}
           </h2>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="원래 가격 (원)"
+              label={t("ticketNew.origPrice")}
               type="number"
               placeholder="80000"
               value={formData.originalPrice || ""}
@@ -211,7 +212,7 @@ export default function TicketNewPage() {
               }
             />
             <Input
-              label="판매 가격 (원)"
+              label={t("ticketNew.askPrice")}
               type="number"
               placeholder="80000"
               value={formData.askingPrice || ""}
@@ -226,7 +227,7 @@ export default function TicketNewPage() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-text-primary mb-1">
-                수량
+                {t("ticket.quantity")}
               </label>
               <select
                 value={formData.quantity}
@@ -237,14 +238,14 @@ export default function TicketNewPage() {
               >
                 {[1, 2, 3, 4].map((q) => (
                   <option key={q} value={q}>
-                    {q}매
+                    {q}{t("ticket.unit")}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-text-primary mb-1">
-                거래 방식
+                {t("ticketNew.tradeMethod")}
               </label>
               <select
                 value={formData.transferType}
@@ -271,26 +272,26 @@ export default function TicketNewPage() {
                 }
                 className="w-4 h-4 rounded border-border text-primary"
               />
-              연석입니다
+              {t("ticketNew.isConsecutive")}
             </label>
           )}
           <div>
             <label className="block text-sm font-medium text-text-primary mb-1">
-              설명 (선택)
+              {t("ticketNew.desc")}
             </label>
             <textarea
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              placeholder="추가 설명을 입력해주세요"
+              placeholder={t("ticketNew.descPlaceholder")}
               rows={3}
               className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <div className="flex gap-2 mt-4">
             <Button variant="outline" size="lg" className="flex-1" onClick={prevStep}>
-              이전
+              {t("ticketNew.prev")}
             </Button>
             <Button
               size="lg"
@@ -326,16 +327,16 @@ export default function TicketNewPage() {
                   });
                   if (!res.ok) {
                     const err = await res.json();
-                    alert(err.error || "등록에 실패했습니다");
+                    alert(err.error || t("ticketNew.submitFail"));
                     return;
                   }
                   nextStep();
                 } catch {
-                  alert("등록 중 오류가 발생했습니다");
+                  alert(t("ticketNew.submitError"));
                 }
               }}
             >
-              등록하기
+              {t("ticketNew.submit")}
             </Button>
           </div>
         </div>
@@ -346,19 +347,17 @@ export default function TicketNewPage() {
         <div className="text-center py-12">
           <span className="text-6xl">🎫</span>
           <h2 className="text-2xl font-bold text-text-primary mt-4 mb-2">
-            등록 완료!
+            {t("ticketNew.done")}
           </h2>
-          <p className="text-sm text-text-secondary mb-8">
-            티켓이 성공적으로 등록되었습니다.
-            <br />
-            구매자가 나타나면 알림을 보내드릴게요.
+          <p className="text-sm text-text-secondary mb-8 whitespace-pre-line">
+            {t("ticketNew.doneDesc")}
           </p>
           <div className="flex gap-2 max-w-sm mx-auto">
             <Button variant="outline" size="lg" className="flex-1" asChild>
-              <a href="/tickets">목록 보기</a>
+              <a href="/tickets">{t("ticketNew.viewList")}</a>
             </Button>
             <Button size="lg" className="flex-1" asChild>
-              <a href="/mypage/listings">내 판매 목록</a>
+              <a href="/mypage/listings">{t("ticketNew.myListings")}</a>
             </Button>
           </div>
         </div>

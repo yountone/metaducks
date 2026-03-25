@@ -5,16 +5,18 @@ import { usePathname } from "next/navigation";
 import { Home, Ticket, MessageSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants";
-
-const NAV_ITEMS = [
-  { href: ROUTES.HOME, label: "홈", icon: Home },
-  { href: ROUTES.TICKETS, label: "티켓", icon: Ticket },
-  { href: ROUTES.COMMUNITY, label: "커뮤니티", icon: MessageSquare },
-  { href: ROUTES.MYPAGE, label: "마이", icon: User },
-];
+import { useTranslation } from "@/lib/i18n";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
+
+  const NAV_ITEMS = [
+    { href: ROUTES.HOME, label: t("nav.home"), icon: Home },
+    { href: ROUTES.TICKETS, label: t("nav.tickets"), icon: Ticket },
+    { href: ROUTES.COMMUNITY, label: t("nav.community"), icon: MessageSquare },
+    { href: ROUTES.MYPAGE, label: t("nav.my"), icon: User },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border md:hidden pb-safe">

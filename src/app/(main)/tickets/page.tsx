@@ -8,15 +8,17 @@ import { useTickets } from "@/hooks/useTickets";
 import { useFilterStore, type SortBy } from "@/stores/filterStore";
 import { useCompareStore } from "@/stores/compareStore";
 import { Shield, Loader2 } from "lucide-react";
-
-const SORT_OPTIONS: { value: SortBy; label: string }[] = [
-  { value: "latest", label: "최신 등록순" },
-  { value: "price_asc", label: "가격 낮은순" },
-  { value: "price_desc", label: "가격 높은순" },
-  { value: "popular", label: "인기순" },
-];
+import { useTranslation } from "@/lib/i18n";
 
 export default function TicketsPage() {
+  const { t } = useTranslation();
+
+  const SORT_OPTIONS: { value: SortBy; label: string }[] = [
+    { value: "latest", label: t("tickets.sort.latest") },
+    { value: "price_asc", label: t("tickets.sort.priceAsc") },
+    { value: "price_desc", label: t("tickets.sort.priceDesc") },
+    { value: "popular", label: t("tickets.sort.popular") },
+  ];
   const { setSortBy, sortBy } = useFilterStore();
   const compareItems = useCompareStore((s) => s.items);
   const {
@@ -49,14 +51,14 @@ export default function TicketsPage() {
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Title */}
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-text-primary">뮤지컬/연극</h1>
+        <h1 className="text-xl font-bold text-text-primary">{t("tickets.title")}</h1>
       </div>
 
       {/* Info banner */}
       <div className="flex items-center gap-2 mb-4 p-3 bg-surface rounded-lg">
         <Shield className="w-4 h-4 text-success shrink-0" />
         <span className="text-xs text-text-secondary">
-          입장 안심 이용 가능 - MetaDucks가 검증한 안전한 티켓만 표시됩니다
+          {t("tickets.safeBanner")}
         </span>
       </div>
 
@@ -71,11 +73,11 @@ export default function TicketsPage() {
           {/* Results count & sort */}
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-text-secondary">
-              총{" "}
+              {t("tickets.total")}{" "}
               <span className="font-medium text-text-primary">
                 {tickets.length}
               </span>
-              개 티켓
+              {t("tickets.count")}
             </p>
             <select
               value={sortBy}
@@ -101,7 +103,7 @@ export default function TicketsPage() {
           {isError && (
             <div className="text-center py-12">
               <p className="text-text-secondary text-sm">
-                티켓을 불러오는 중 오류가 발생했습니다
+                {t("tickets.error")}
               </p>
             </div>
           )}
@@ -110,7 +112,7 @@ export default function TicketsPage() {
           {!isLoading && !isError && tickets.length === 0 && (
             <div className="text-center py-12">
               <p className="text-text-secondary text-sm">
-                조건에 맞는 티켓이 없습니다
+                {t("tickets.empty")}
               </p>
             </div>
           )}
@@ -135,26 +137,26 @@ export default function TicketsPage() {
         <div className="hidden xl:block w-52 shrink-0 space-y-4">
           <div className="border border-border rounded-xl p-4">
             <h3 className="font-medium text-sm text-text-primary mb-2">
-              상품 비교 {compareItems.length}
+              {t("tickets.compare")} {compareItems.length}
             </h3>
             <p className="text-xs text-text-secondary">
-              비교담기를 눌러 티켓을 비교해보세요
+              {t("tickets.compareHint")}
             </p>
           </div>
           <div className="border border-border rounded-xl p-4">
             <h3 className="font-medium text-sm text-text-primary mb-2">
-              최근 본 상품 0
+              {t("tickets.recentView")} 0
             </h3>
             <button className="text-xs text-primary hover:underline">
-              더보기
+              {t("tickets.more")}
             </button>
           </div>
           <div className="border border-primary/20 rounded-xl p-4 bg-primary-light">
             <h3 className="font-bold text-sm text-primary mb-1">
-              상품 등록 알림
+              {t("tickets.alertTitle")}
             </h3>
             <p className="text-xs text-text-secondary">
-              찾는 티켓이 없다면 빠르게 알려드려요!
+              {t("tickets.alertDesc")}
             </p>
           </div>
         </div>

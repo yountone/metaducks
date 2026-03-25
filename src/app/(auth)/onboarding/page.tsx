@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useTranslation } from "@/lib/i18n";
 
 export default function OnboardingPage() {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [nickname, setNickname] = useState("");
 
@@ -26,15 +28,15 @@ export default function OnboardingPage() {
         {step === 1 && (
           <div>
             <h1 className="text-2xl font-bold text-text-primary mb-2">
-              닉네임을 정해주세요
+              {t("onboarding.nickname")}
             </h1>
             <p className="text-sm text-text-secondary mb-6">
-              MetaDucks에서 사용할 닉네임이에요
+              {t("onboarding.nicknameDesc")}
             </p>
             <Input
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="2~12자 한글/영문/숫자"
+              placeholder={t("onboarding.nicknameHint")}
               className="mb-4"
             />
             <Button
@@ -43,7 +45,7 @@ export default function OnboardingPage() {
               onClick={() => setStep(2)}
               disabled={nickname.length < 2}
             >
-              다음
+              {t("ticketNew.next")}
             </Button>
           </div>
         )}
@@ -51,10 +53,10 @@ export default function OnboardingPage() {
         {step === 2 && (
           <div>
             <h1 className="text-2xl font-bold text-text-primary mb-2">
-              지갑을 연결해보세요
+              {t("onboarding.walletTitle")}
             </h1>
             <p className="text-sm text-text-secondary mb-6">
-              크립토로 빠르고 안전하게 거래할 수 있어요 (선택)
+              {t("onboarding.walletDesc")}
             </p>
 
             <div className="space-y-3 mb-6">
@@ -63,7 +65,7 @@ export default function OnboardingPage() {
                 <div>
                   <p className="font-medium text-text-primary">MetaMask</p>
                   <p className="text-xs text-text-secondary">
-                    브라우저 확장 프로그램
+                    {t("wallet.browser")}
                   </p>
                 </div>
               </button>
@@ -74,7 +76,7 @@ export default function OnboardingPage() {
                     WalletConnect
                   </p>
                   <p className="text-xs text-text-secondary">
-                    QR코드로 모바일 지갑 연결
+                    {t("wallet.qr")}
                   </p>
                 </div>
               </button>
@@ -82,10 +84,10 @@ export default function OnboardingPage() {
 
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" size="lg" onClick={() => setStep(3)}>
-                건너뛰기
+                {t("onboarding.skip")}
               </Button>
               <Button className="flex-1" size="lg" onClick={() => setStep(3)}>
-                연결하기
+                {t("onboarding.connectWallet")}
               </Button>
             </div>
           </div>
@@ -95,13 +97,13 @@ export default function OnboardingPage() {
           <div className="text-center">
             <span className="text-6xl">🎉</span>
             <h1 className="text-2xl font-bold text-text-primary mt-4 mb-2">
-              환영합니다, {nickname || "사용자"}님!
+              {t("onboarding.welcome", { name: nickname || "사용자" })}
             </h1>
             <p className="text-sm text-text-secondary mb-8">
-              MetaDucks에서 안전한 티켓 거래를 시작해보세요
+              {t("onboarding.welcomeDesc")}
             </p>
             <Button className="w-full" size="lg" asChild>
-              <a href="/">시작하기</a>
+              <a href="/">{t("onboarding.start")}</a>
             </Button>
           </div>
         )}

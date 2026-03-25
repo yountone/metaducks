@@ -7,6 +7,7 @@ import { formatPrice, formatShowDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SEAT_GRADES, TRANSFER_TYPES } from "@/constants";
+import { useTranslation } from "@/lib/i18n";
 
 const gradeLabel = (v: string) =>
   SEAT_GRADES.find((g) => g.value === v)?.label || v;
@@ -14,6 +15,7 @@ const transferLabel = (v: string) =>
   TRANSFER_TYPES.find((t) => t.value === v)?.label || v;
 
 export function CompareDrawer() {
+  const { t } = useTranslation();
   const { items, isOpen, setOpen, removeItem, clear } = useCompareStore();
   const [showTable, setShowTable] = useState(false);
 
@@ -27,7 +29,7 @@ export function CompareDrawer() {
           onClick={() => setOpen(true)}
           className="fixed bottom-20 right-4 md:bottom-6 z-40 bg-primary text-white px-4 py-2.5 rounded-full shadow-lg hover:bg-primary/90 transition-colors text-sm font-medium"
         >
-          상품 비교 {items.length}
+          {t("compare.title")} {items.length}
         </button>
       )}
 
@@ -41,11 +43,11 @@ export function CompareDrawer() {
                 className="flex items-center gap-1 text-sm text-text-primary hover:text-primary"
               >
                 <ArrowLeft className="w-4 h-4" />
-                돌아가기
+                {t("compare.back")}
               </button>
             ) : (
               <h3 className="font-bold text-text-primary">
-                상품 비교 ({items.length}/5)
+                {t("compare.title")} ({items.length}/5)
               </h3>
             )}
             <div className="flex items-center gap-2">
@@ -53,7 +55,7 @@ export function CompareDrawer() {
                 onClick={clear}
                 className="text-xs text-text-secondary hover:text-accent-red"
               >
-                전체 삭제
+                {t("compare.clearAll")}
               </button>
               <button
                 onClick={() => {
@@ -108,8 +110,8 @@ export function CompareDrawer() {
                   disabled={items.length < 2}
                 >
                   {items.length < 2
-                    ? "2개 이상 선택해주세요"
-                    : `${items.length}개 비교하기`}
+                    ? t("compare.minTwo")
+                    : `${items.length}${t("compare.compareN")}`}
                 </Button>
               </div>
             </>
@@ -120,7 +122,7 @@ export function CompareDrawer() {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="p-3 text-left text-xs font-medium text-text-secondary w-24">
-                      항목
+                      {t("compare.item")}
                     </th>
                     {items.map((item) => (
                       <th
@@ -144,7 +146,7 @@ export function CompareDrawer() {
                 </thead>
                 <tbody className="text-sm">
                   <tr className="border-b border-border">
-                    <td className="p-3 text-xs text-text-secondary">공연</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.show")}</td>
                     {items.map((item) => (
                       <td
                         key={item.id}
@@ -155,7 +157,7 @@ export function CompareDrawer() {
                     ))}
                   </tr>
                   <tr className="border-b border-border">
-                    <td className="p-3 text-xs text-text-secondary">공연일시</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.showDate")}</td>
                     {items.map((item) => (
                       <td
                         key={item.id}
@@ -166,7 +168,7 @@ export function CompareDrawer() {
                     ))}
                   </tr>
                   <tr className="border-b border-border">
-                    <td className="p-3 text-xs text-text-secondary">좌석</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.seat")}</td>
                     {items.map((item) => (
                       <td
                         key={item.id}
@@ -181,7 +183,7 @@ export function CompareDrawer() {
                     ))}
                   </tr>
                   <tr className="border-b border-border">
-                    <td className="p-3 text-xs text-text-secondary">등급</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.grade")}</td>
                     {items.map((item) => (
                       <td
                         key={item.id}
@@ -192,7 +194,7 @@ export function CompareDrawer() {
                     ))}
                   </tr>
                   <tr className="border-b border-border">
-                    <td className="p-3 text-xs text-text-secondary">거래방식</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.tradeMethod")}</td>
                     {items.map((item) => (
                       <td key={item.id} className="p-3 text-center">
                         <Badge
@@ -206,20 +208,20 @@ export function CompareDrawer() {
                     ))}
                   </tr>
                   <tr className="border-b border-border">
-                    <td className="p-3 text-xs text-text-secondary">수량</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.quantity")}</td>
                     {items.map((item) => (
                       <td
                         key={item.id}
                         className="p-3 text-center text-xs text-text-primary"
                       >
-                        {item.quantity}매
-                        {item.isConsecutive && " (연석)"}
+                        {item.quantity}{t("common.tickets")}
+                        {item.isConsecutive && ` (${t("popular.consecutive")})`}
                       </td>
                     ))}
                   </tr>
                   {items.some((item) => item.cast) && (
                     <tr className="border-b border-border">
-                      <td className="p-3 text-xs text-text-secondary">캐스트</td>
+                      <td className="p-3 text-xs text-text-secondary">{t("compare.cast")}</td>
                       {items.map((item) => (
                         <td
                           key={item.id}
@@ -232,7 +234,7 @@ export function CompareDrawer() {
                   )}
                   <tr className="border-b border-border bg-primary-light/20">
                     <td className="p-3 text-xs font-medium text-text-primary">
-                      한 매 가격
+                      {t("compare.pricePerTicket")}
                     </td>
                     {items.map((item) => (
                       <td
@@ -242,14 +244,14 @@ export function CompareDrawer() {
                         {formatPrice(item.askingPrice)}
                         {item.isUnderFaceValue && (
                           <Badge variant="underFaceValue" className="ml-1">
-                            정가이하
+                            {t("ticket.underFace")}
                           </Badge>
                         )}
                       </td>
                     ))}
                   </tr>
                   <tr>
-                    <td className="p-3 text-xs text-text-secondary">판매자</td>
+                    <td className="p-3 text-xs text-text-secondary">{t("compare.seller")}</td>
                     {items.map((item) => (
                       <td
                         key={item.id}

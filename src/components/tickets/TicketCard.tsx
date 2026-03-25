@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { formatPrice, formatShowDate } from "@/lib/utils";
 import { useCompareStore } from "@/stores/compareStore";
 import { ROUTES } from "@/constants";
+import { useTranslation } from "@/lib/i18n";
 import type { TicketListItem } from "@/types";
 
 interface TicketCardProps {
@@ -13,6 +14,7 @@ interface TicketCardProps {
 }
 
 export function TicketCard({ ticket }: TicketCardProps) {
+  const { t } = useTranslation();
   const { toggleItem, hasItem } = useCompareStore();
   const isCompared = hasItem(ticket.id);
 
@@ -22,11 +24,11 @@ export function TicketCard({ ticket }: TicketCardProps) {
         {/* Show date */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-primary font-medium">
-            공연 일시 {formatShowDate(ticket.showDate)}
+            {t("ticket.showDate")} {formatShowDate(ticket.showDate)}
           </span>
           <div className="flex items-center gap-1.5">
             {ticket.isUnderFaceValue && (
-              <Badge variant="underFaceValue">정가 이하</Badge>
+              <Badge variant="underFaceValue">{t("ticket.underFace")}</Badge>
             )}
           </div>
         </div>
@@ -52,27 +54,27 @@ export function TicketCard({ ticket }: TicketCardProps) {
               variant={ticket.transferType === "PIN" ? "pin" : ticket.transferType === "DIRECT" ? "direct" : "default"}
             >
               {ticket.transferType === "PIN"
-                ? "PIN"
+                ? t("ticket.pin")
                 : ticket.transferType === "DIRECT"
-                ? "현장"
-                : "PIN/현장"}
+                ? t("ticket.direct")
+                : t("ticket.pinDirect")}
             </Badge>
             {ticket.isVerified && (
-              <Badge variant="verified">입장안심</Badge>
+              <Badge variant="verified">{t("ticket.safeEntry")}</Badge>
             )}
           </div>
 
           <div className="text-right">
             <span className="text-xs text-text-secondary">
-              수량 {ticket.quantity}매
-              {ticket.isConsecutive && ticket.quantity > 1 && "(연석)"}
+              {t("ticket.quantity")} {ticket.quantity}{t("ticket.unit")}
+              {ticket.isConsecutive && ticket.quantity > 1 && `(${t("popular.consecutive")})`}
             </span>
           </div>
         </div>
 
         {/* Price */}
         <div className="flex items-end justify-between mt-2 pt-2 border-t border-border/50">
-          <span className="text-xs text-text-secondary">한 매</span>
+          <span className="text-xs text-text-secondary">{t("popular.perTicket")}</span>
           <div className="text-right">
             {ticket.askingPrice !== ticket.originalPrice && (
               <span className="text-xs text-text-secondary line-through mr-1">
@@ -99,7 +101,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
         }`}
       >
         <Check className="w-3 h-3" />
-        비교담기
+        {t("ticket.addCompare")}
       </button>
     </div>
   );
