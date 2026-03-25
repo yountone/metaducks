@@ -94,28 +94,28 @@ export default function MyPage() {
       <div className="grid grid-cols-3 gap-3 mb-6">
         <div className="bg-surface rounded-xl p-3 text-center">
           <p className="text-xl font-bold text-text-primary">3</p>
-          <p className="text-xs text-text-secondary">판매 중</p>
+          <p className="text-xs text-text-secondary">{t("mypage.selling")}</p>
         </div>
         <div className="bg-surface rounded-xl p-3 text-center">
           <p className="text-xl font-bold text-text-primary">12</p>
-          <p className="text-xs text-text-secondary">거래 완료</p>
+          <p className="text-xs text-text-secondary">{t("mypage.completed")}</p>
         </div>
         <div className="bg-surface rounded-xl p-3 text-center">
           <p className="text-xl font-bold text-primary">4.8</p>
-          <p className="text-xs text-text-secondary">평균 평점</p>
+          <p className="text-xs text-text-secondary">{t("mypage.avgRating")}</p>
         </div>
       </div>
 
       {/* Menu */}
       <div className="space-y-1">
-        {MENU_ITEMS.map(({ icon: Icon, label, href, count, badge }) => (
+        {MENU_ITEMS_CONFIG.map(({ icon: Icon, labelKey, href, count, badge }) => (
           <Link
-            key={label}
+            key={labelKey}
             href={href}
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface transition-colors"
           >
             <Icon className="w-5 h-5 text-text-secondary" />
-            <span className="flex-1 text-sm text-text-primary">{label}</span>
+            <span className="flex-1 text-sm text-text-primary">{t(labelKey)}</span>
             {count !== undefined && (
               <span className="text-xs text-text-secondary">{count}</span>
             )}

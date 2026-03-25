@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { formatPrice, formatShowDate } from "@/lib/utils";
 import { ROUTES } from "@/constants";
+import { useTranslation } from "@/lib/i18n";
 
 const MY_LISTINGS = [
   {
@@ -41,20 +42,21 @@ const MY_LISTINGS = [
   },
 ];
 
-const statusBadge = (status: string) => {
-  switch (status) {
-    case "ACTIVE":
-      return <Badge variant="verified">판매 중</Badge>;
-    case "RESERVED":
-      return <Badge variant="pin">예약됨</Badge>;
-    case "SOLD":
-      return <Badge variant="default">판매 완료</Badge>;
-    default:
-      return <Badge>{status}</Badge>;
-  }
-};
-
 export default function MyListingsPage() {
+  const { t } = useTranslation();
+
+  const statusBadge = (status: string) => {
+    switch (status) {
+      case "ACTIVE":
+        return <Badge variant="verified">{t("mypage.statusActive")}</Badge>;
+      case "RESERVED":
+        return <Badge variant="pin">{t("mypage.statusReserved")}</Badge>;
+      case "SOLD":
+        return <Badge variant="default">{t("mypage.statusSold")}</Badge>;
+      default:
+        return <Badge>{status}</Badge>;
+    }
+  };
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -62,12 +64,12 @@ export default function MyListingsPage() {
           <Link href={ROUTES.MYPAGE} className="text-text-secondary hover:text-primary">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-xl font-bold text-text-primary">내 판매 목록</h1>
+          <h1 className="text-xl font-bold text-text-primary">{t("mypage.listings")}</h1>
         </div>
         <Link href={ROUTES.TICKET_NEW}>
           <Button size="sm">
             <Plus className="w-4 h-4 mr-1" />
-            새 등록
+            {t("mypage.newListing")}
           </Button>
         </Link>
       </div>
@@ -81,7 +83,7 @@ export default function MyListingsPage() {
                   <div className="flex items-center gap-2 mb-1">
                     {statusBadge(listing.status)}
                     <span className="text-xs text-text-secondary">
-                      조회 {listing.viewCount}
+                      {t("ticket.views")} {listing.viewCount}
                     </span>
                   </div>
                   <p className="text-sm font-medium text-text-primary mb-0.5">
