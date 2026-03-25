@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { formatPrice, formatShowDate } from "@/lib/utils";
 import { ROUTES } from "@/constants";
+import { useTranslation } from "@/lib/i18n";
 
 const SAMPLE_TICKETS = [
   {
@@ -63,13 +66,15 @@ const SAMPLE_TICKETS = [
 ];
 
 export function PopularTickets() {
+  const { t } = useTranslation();
+
   return (
     <section className="max-w-5xl mx-auto px-4 py-8">
       <h2 className="text-xl font-bold text-text-primary mb-1">
-        오늘의 <span className="text-primary">인기 티켓</span>
+        {t("popular.title")}<span className="text-primary">{t("popular.highlight")}</span>
       </h2>
       <p className="text-sm text-text-secondary mb-6">
-        지금 가장 많이 찾는 뮤지컬 티켓
+        {t("popular.subtitle")}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -101,14 +106,14 @@ export function PopularTickets() {
                   {ticket.transferType === "PIN" ? "PIN" : "현장"}
                 </Badge>
                 <span className="text-xs text-text-secondary">
-                  수량 {ticket.quantity}매
-                  {ticket.quantity > 1 && "(연석)"}
+                  {ticket.quantity}{t("common.tickets")}
+                  {ticket.quantity > 1 && ` (${t("popular.consecutive")})`}
                 </span>
               </div>
             </div>
 
             <div className="text-right shrink-0">
-              <p className="text-xs text-text-secondary">한 매</p>
+              <p className="text-xs text-text-secondary">{t("popular.perTicket")}</p>
               <p className="text-lg font-bold text-accent-red">
                 {formatPrice(ticket.askingPrice)}
               </p>
@@ -122,7 +127,7 @@ export function PopularTickets() {
           href={ROUTES.TICKETS}
           className="inline-flex items-center text-sm text-primary font-medium hover:underline"
         >
-          모든 티켓 보기 →
+          {t("popular.viewAll")}
         </Link>
       </div>
     </section>

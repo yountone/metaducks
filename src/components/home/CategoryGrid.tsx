@@ -1,11 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { Theater, Music, Trophy, Film, Gift, Tag } from "lucide-react";
 import { ROUTES } from "@/constants";
+import { useTranslation } from "@/lib/i18n";
 
 const CATEGORIES = [
   {
     icon: Theater,
-    label: "뮤지컬/연극",
+    labelKey: "cat.musical",
     href: ROUTES.TICKETS,
     iconColor: "text-purple-600",
     bgColor: "bg-purple-50",
@@ -13,7 +16,7 @@ const CATEGORIES = [
   },
   {
     icon: Music,
-    label: "콘서트",
+    labelKey: "cat.concert",
     href: "#",
     iconColor: "text-blue-600",
     bgColor: "bg-blue-50",
@@ -21,7 +24,7 @@ const CATEGORIES = [
   },
   {
     icon: Trophy,
-    label: "스포츠",
+    labelKey: "cat.sports",
     href: "#",
     iconColor: "text-green-600",
     bgColor: "bg-green-50",
@@ -29,7 +32,7 @@ const CATEGORIES = [
   },
   {
     icon: Film,
-    label: "영화/전시",
+    labelKey: "cat.movie",
     href: "#",
     iconColor: "text-pink-600",
     bgColor: "bg-pink-50",
@@ -37,7 +40,7 @@ const CATEGORIES = [
   },
   {
     icon: Gift,
-    label: "상품권/쿠폰",
+    labelKey: "cat.voucher",
     href: "#",
     iconColor: "text-amber-600",
     bgColor: "bg-amber-50",
@@ -45,7 +48,7 @@ const CATEGORIES = [
   },
   {
     icon: Tag,
-    label: "정가 이하",
+    labelKey: "cat.underface",
     href: "#",
     iconColor: "text-red-600",
     bgColor: "bg-red-50",
@@ -54,11 +57,13 @@ const CATEGORIES = [
 ];
 
 export function CategoryGrid() {
+  const { t } = useTranslation();
+
   return (
     <section className="max-w-3xl mx-auto px-4 pb-10">
       <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
         {CATEGORIES.map(
-          ({ icon: Icon, label, href, iconColor, bgColor, active }) => {
+          ({ icon: Icon, labelKey, href, iconColor, bgColor, active }) => {
             const card = (
               <div
                 className={`relative p-4 md:p-5 rounded-xl border transition-all ${
@@ -73,11 +78,11 @@ export function CategoryGrid() {
                   <Icon className="w-5 h-5" />
                 </div>
                 <p className="text-sm font-medium text-text-primary leading-tight">
-                  {label}
+                  {t(labelKey)}
                 </p>
                 {!active && (
                   <p className="text-[10px] text-text-secondary mt-0.5">
-                    Coming Soon
+                    {t("cat.coming")}
                   </p>
                 )}
               </div>
@@ -85,12 +90,12 @@ export function CategoryGrid() {
 
             if (active) {
               return (
-                <Link key={label} href={href}>
+                <Link key={labelKey} href={href}>
                   {card}
                 </Link>
               );
             }
-            return <div key={label}>{card}</div>;
+            return <div key={labelKey}>{card}</div>;
           }
         )}
       </div>

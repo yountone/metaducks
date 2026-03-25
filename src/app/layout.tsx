@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Web3Provider } from "@/lib/web3-provider";
+import { I18nProvider } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,7 +26,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans">
-        <Web3Provider>{children}</Web3Provider>
+        <Web3Provider>
+          <I18nProvider>{children}</I18nProvider>
+        </Web3Provider>
       </body>
     </html>
   );
