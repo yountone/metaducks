@@ -14,55 +14,52 @@ import {
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ROUTES } from "@/constants";
-import { useTranslation } from "@/lib/i18n";
 
-const MENU_ITEMS_CONFIG = [
+const MENU_ITEMS = [
   {
     icon: Ticket,
-    labelKey: "mypage.listings",
+    label: "내 판매 목록",
     href: ROUTES.MY_LISTINGS,
     count: 3,
   },
   {
     icon: Heart,
-    labelKey: "mypage.favorites",
+    label: "찜한 티켓",
     href: ROUTES.MYPAGE,
     count: 5,
   },
   {
     icon: History,
-    labelKey: "mypage.transactions",
+    label: "거래 내역",
     href: ROUTES.MYPAGE,
     count: 12,
   },
   {
     icon: Star,
-    labelKey: "mypage.reviews",
+    label: "받은 후기",
     href: ROUTES.MYPAGE,
     count: 8,
   },
   {
     icon: Wallet,
-    labelKey: "mypage.wallet",
+    label: "지갑 관리",
     href: ROUTES.MY_WALLET,
     badge: "BSC",
   },
   {
     icon: Crown,
-    labelKey: "mypage.membership",
+    label: "멤버십",
     href: ROUTES.MEMBERSHIP,
     badge: "Basic",
   },
   {
     icon: Settings,
-    labelKey: "mypage.settings",
+    label: "설정",
     href: ROUTES.MY_SETTINGS,
   },
 ];
 
 export default function MyPage() {
-  const { t } = useTranslation();
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       {/* Profile */}
@@ -75,9 +72,9 @@ export default function MyPage() {
             <h1 className="text-lg font-bold text-text-primary">뮤덕이</h1>
             <p className="text-sm text-text-secondary">museum@metaducks.io</p>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="verified">{t("mypage.verified")}</Badge>
+              <Badge variant="verified">인증됨</Badge>
               <span className="text-xs text-text-secondary">
-                {t("mypage.trust")} ⭐ 4.8
+                신뢰도 ⭐ 4.8
               </span>
             </div>
           </div>
@@ -94,28 +91,28 @@ export default function MyPage() {
       <div className="grid grid-cols-3 gap-3 mb-6">
         <div className="bg-surface rounded-xl p-3 text-center">
           <p className="text-xl font-bold text-text-primary">3</p>
-          <p className="text-xs text-text-secondary">{t("mypage.selling")}</p>
+          <p className="text-xs text-text-secondary">판매 중</p>
         </div>
         <div className="bg-surface rounded-xl p-3 text-center">
           <p className="text-xl font-bold text-text-primary">12</p>
-          <p className="text-xs text-text-secondary">{t("mypage.completed")}</p>
+          <p className="text-xs text-text-secondary">거래 완료</p>
         </div>
         <div className="bg-surface rounded-xl p-3 text-center">
           <p className="text-xl font-bold text-primary">4.8</p>
-          <p className="text-xs text-text-secondary">{t("mypage.avgRating")}</p>
+          <p className="text-xs text-text-secondary">평균 평점</p>
         </div>
       </div>
 
       {/* Menu */}
       <div className="space-y-1">
-        {MENU_ITEMS_CONFIG.map(({ icon: Icon, labelKey, href, count, badge }) => (
+        {MENU_ITEMS.map(({ icon: Icon, label, href, count, badge }) => (
           <Link
-            key={labelKey}
+            key={label}
             href={href}
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface transition-colors"
           >
             <Icon className="w-5 h-5 text-text-secondary" />
-            <span className="flex-1 text-sm text-text-primary">{t(labelKey)}</span>
+            <span className="flex-1 text-sm text-text-primary">{label}</span>
             {count !== undefined && (
               <span className="text-xs text-text-secondary">{count}</span>
             )}

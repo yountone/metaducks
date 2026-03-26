@@ -4,23 +4,21 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { POST_CATEGORIES } from "@/constants";
-import { useTranslation } from "@/lib/i18n";
 
 export default function PostNewPage() {
-  const { t } = useTranslation();
   const [category, setCategory] = useState("FREE");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-bold text-text-primary mb-6">{t("communityNew.title")}</h1>
+      <h1 className="text-xl font-bold text-text-primary mb-6">글쓰기</h1>
 
       <div className="space-y-4">
         {/* Category */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            {t("communityNew.category")}
+            카테고리
           </label>
           <div className="flex gap-2 flex-wrap">
             {POST_CATEGORIES.map((cat) => (
@@ -41,21 +39,21 @@ export default function PostNewPage() {
 
         {/* Title */}
         <Input
-          label={t("communityNew.postTitle")}
+          label="제목"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("communityNew.titlePlaceholder")}
+          placeholder="제목을 입력해주세요"
         />
 
         {/* Content */}
         <div>
           <label className="block text-sm font-medium text-text-primary mb-1">
-            {t("communityNew.content")}
+            내용
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder={t("communityNew.contentPlaceholder")}
+            placeholder="내용을 입력해주세요"
             rows={10}
             className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
@@ -64,10 +62,10 @@ export default function PostNewPage() {
         {/* Image upload placeholder */}
         <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
           <p className="text-sm text-text-secondary">
-            {t("communityNew.imageUpload")}
+            이미지를 드래그하거나 클릭하여 업로드
           </p>
           <p className="text-xs text-text-secondary mt-1">
-            {t("communityNew.imageLimit")}
+            최대 5장, 10MB 이하
           </p>
         </div>
 
@@ -76,7 +74,7 @@ export default function PostNewPage() {
           size="lg"
           disabled={!title.trim() || !content.trim()}
         >
-          {t("communityNew.submit")}
+          등록하기
         </Button>
       </div>
     </div>

@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { formatRelativeTime } from "@/lib/utils";
 import { ROUTES } from "@/constants";
-import { useTranslation } from "@/lib/i18n";
 
 const POST = {
   id: "p1",
@@ -66,7 +65,6 @@ export default function PostDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { t } = useTranslation();
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
@@ -76,7 +74,7 @@ export default function PostDetailPage({
         className="flex items-center gap-1 text-sm text-text-secondary hover:text-primary mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        {t("community.backToList")}
+        목록으로
       </Link>
 
       {/* Post */}
@@ -122,7 +120,7 @@ export default function PostDetailPage({
       {/* Comments */}
       <div className="mb-4">
         <h3 className="text-sm font-bold text-text-primary mb-3">
-          {t("community.comments")} {COMMENTS.length}
+          댓글 {COMMENTS.length}
         </h3>
 
         <div className="space-y-3">
@@ -142,7 +140,7 @@ export default function PostDetailPage({
                 </div>
                 <p className="text-sm text-text-primary">{comment.content}</p>
                 <button className="mt-2 text-xs text-text-secondary hover:text-primary">
-                  {t("community.reply")}
+                  답글
                 </button>
               </Card>
 
@@ -175,10 +173,10 @@ export default function PostDetailPage({
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder={t("community.commentPlaceholder")}
+            placeholder="댓글을 입력하세요"
             className="flex-1 h-10 px-3 text-sm border border-border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
-          <Button size="md">{t("community.submit")}</Button>
+          <Button size="md">등록</Button>
         </div>
       </div>
     </div>

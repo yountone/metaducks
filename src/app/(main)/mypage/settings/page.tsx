@@ -6,50 +6,48 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/constants";
-import { useTranslation } from "@/lib/i18n";
 
 export default function SettingsPage() {
-  const { t } = useTranslation();
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-6">
         <Link href={ROUTES.MYPAGE} className="text-text-secondary hover:text-primary">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-xl font-bold text-text-primary">{t("settings.title")}</h1>
+        <h1 className="text-xl font-bold text-text-primary">설정</h1>
       </div>
 
       <div className="space-y-6">
         {/* Profile settings */}
         <Card>
-          <h3 className="font-bold text-text-primary mb-4">{t("settings.profile")}</h3>
+          <h3 className="font-bold text-text-primary mb-4">프로필 설정</h3>
           <div className="space-y-3">
-            <Input label={t("settings.nickname")} defaultValue="뮤덕이" />
-            <Input label={t("settings.email")} defaultValue="museum@metaducks.io" disabled />
-            <Input label={t("settings.phone")} placeholder="010-0000-0000" />
+            <Input label="닉네임" defaultValue="뮤덕이" />
+            <Input label="이메일" defaultValue="museum@metaducks.io" disabled />
+            <Input label="전화번호" placeholder="010-0000-0000" />
           </div>
           <Button className="mt-4" size="md">
-            {t("settings.save")}
+            저장
           </Button>
         </Card>
 
         {/* Notification settings */}
         <Card>
-          <h3 className="font-bold text-text-primary mb-4">{t("settings.notification")}</h3>
+          <h3 className="font-bold text-text-primary mb-4">알림 설정</h3>
           <div className="space-y-3">
             <label className="flex items-center justify-between cursor-pointer">
               <span className="text-sm text-text-primary">
-                {t("settings.ticketAlert")}
+                티켓 등록 알림
               </span>
               <input type="checkbox" defaultChecked className="w-4 h-4" />
             </label>
             <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-sm text-text-primary">{t("settings.tradeAlert")}</span>
+              <span className="text-sm text-text-primary">거래 알림</span>
               <input type="checkbox" defaultChecked className="w-4 h-4" />
             </label>
             <label className="flex items-center justify-between cursor-pointer">
               <span className="text-sm text-text-primary">
-                {t("settings.commentAlert")}
+                커뮤니티 댓글 알림
               </span>
               <input type="checkbox" defaultChecked className="w-4 h-4" />
             </label>
@@ -58,13 +56,13 @@ export default function SettingsPage() {
 
         {/* Danger zone */}
         <Card>
-          <h3 className="font-bold text-text-primary mb-4">{t("settings.account")}</h3>
+          <h3 className="font-bold text-text-primary mb-4">계정</h3>
           <div className="space-y-3">
             <button className="text-sm text-text-secondary hover:text-primary">
-              {t("settings.logout")}
+              로그아웃
             </button>
             <button className="text-sm text-accent-red hover:underline block">
-              {t("settings.delete")}
+              회원탈퇴
             </button>
           </div>
         </Card>

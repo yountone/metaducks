@@ -7,10 +7,8 @@ import { PaymentModal } from "@/components/payment/PaymentModal";
 import { MEMBERSHIP_PLANS } from "@/constants";
 import { formatPrice } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { useTranslation } from "@/lib/i18n";
 
 export default function MembershipPlansPage() {
-  const { t } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showPayment, setShowPayment] = useState(false);
 
@@ -19,7 +17,7 @@ export default function MembershipPlansPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-xl font-bold text-text-primary mb-6">
-        {t("membership.selectPlan")}
+        멤버십 플랜 선택
       </h1>
 
       <div className="space-y-3">
@@ -39,7 +37,7 @@ export default function MembershipPlansPage() {
                 <p className="text-xl font-bold text-primary">
                   {formatPrice(p.price)}
                   <span className="text-xs text-text-secondary font-normal">
-                    {t("membership.perMonth")}
+                    / 월
                   </span>
                 </p>
               </div>
@@ -73,7 +71,7 @@ export default function MembershipPlansPage() {
         disabled={!selectedPlan}
         onClick={() => setShowPayment(true)}
       >
-        {t("membership.pay")}
+        결제하기
       </Button>
 
       {plan && (

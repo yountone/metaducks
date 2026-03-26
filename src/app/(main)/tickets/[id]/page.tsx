@@ -11,7 +11,6 @@ import { formatPrice, formatShowDate } from "@/lib/utils";
 import { useTicketDetail } from "@/hooks/useTickets";
 import { useCompareStore } from "@/stores/compareStore";
 import { ROUTES } from "@/constants";
-import { useTranslation } from "@/lib/i18n";
 
 export default function TicketDetailPage({
   params,
@@ -22,7 +21,6 @@ export default function TicketDetailPage({
   const { data: ticket, isLoading, isError } = useTicketDetail(id);
   const [showPayment, setShowPayment] = useState(false);
   const { toggleItem, hasItem } = useCompareStore();
-  const { t } = useTranslation();
 
   if (isLoading) {
     return (
@@ -35,9 +33,9 @@ export default function TicketDetailPage({
   if (isError || !ticket) {
     return (
       <div className="text-center py-20">
-        <p className="text-text-secondary">{t("ticket.notFound")}</p>
+        <p className="text-text-secondary">티켓을 찾을 수 없습니다</p>
         <Link href={ROUTES.TICKETS} className="text-primary text-sm mt-2 inline-block">
-          {t("ticket.backToList")}
+          목록으로 돌아가기
         </Link>
       </div>
     );
@@ -73,9 +71,9 @@ export default function TicketDetailPage({
     <div className="max-w-3xl mx-auto px-4 py-6 pb-24">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-bold text-text-primary">{t("ticket.productInfo")}</h1>
+        <h1 className="text-lg font-bold text-text-primary">상품 정보</h1>
         <span className="text-xs text-text-secondary">
-          {t("ticket.productNo")} {ticket.id}
+          상품번호 {ticket.id}
         </span>
       </div>
 
@@ -87,29 +85,29 @@ export default function TicketDetailPage({
             {ticket.isVerified && (
               <div className="flex items-center gap-1 text-xs text-success">
                 <Shield className="w-3.5 h-3.5" />
-                {t("ticket.safeEntry")}
+                입장 안심 이용 가능
               </div>
             )}
             {ticket.isUnderFaceValue && (
-              <Badge variant="underFaceValue">{t("ticket.underFace")}</Badge>
+              <Badge variant="underFaceValue">정가 이하</Badge>
             )}
           </div>
           <button className="flex items-center gap-1 text-xs text-text-secondary hover:text-accent-red">
             <Flag className="w-3 h-3" />
-            {t("ticket.report")}
+            신고하기
           </button>
         </div>
 
         {/* Breadcrumb */}
         <div className="flex items-center gap-1 text-xs text-text-secondary mb-1">
-          <span>{t("tickets.title")}</span>
+          <span>뮤지컬/연극</span>
           <ChevronRight className="w-3 h-3" />
           <span>{ticket.eventTitle}</span>
         </div>
 
         {/* Show date */}
         <p className="text-sm text-text-primary mb-3">
-          {t("ticket.showDate")}{" "}
+          공연 일시{" "}
           <span className="font-medium">
             {formatShowDate(ticket.showDate)}
           </span>
@@ -132,7 +130,7 @@ export default function TicketDetailPage({
         {/* PIN gift button */}
         {ticket.transferType === "PIN" && (
           <button className="px-3 py-1.5 text-xs border border-border rounded-lg hover:bg-surface transition-colors">
-            {t("ticket.pinGift")}
+            PIN 선물하기
           </button>
         )}
       </Card>
@@ -143,21 +141,21 @@ export default function TicketDetailPage({
           {/* Left: Transfer type */}
           <div>
             <h3 className="text-sm font-bold text-text-primary mb-3">
-              {t("ticket.tradeMethod")}
+              거래 방식 선택
             </h3>
             <label className="flex items-center gap-2 cursor-pointer">
               <div className="w-4 h-4 rounded-full border-4 border-primary" />
               <span className="text-sm text-text-primary">
                 {ticket.transferType === "PIN"
-                  ? t("ticket.pin")
+                  ? "PIN(E-ticket) 거래"
                   : ticket.transferType === "DIRECT"
-                    ? t("ticket.direct")
-                    : t("ticket.pinDirect")}
+                    ? "현장 거래"
+                    : "PIN/현장 거래"}
               </span>
             </label>
             {ticket.transferType === "PIN" && (
               <button className="mt-1 text-xs text-primary hover:underline">
-                {t("ticket.pinInfo")}
+                PIN(E-ticket) 거래란? &gt;
               </button>
             )}
           </div>
@@ -165,13 +163,13 @@ export default function TicketDetailPage({
           {/* Right: Price info table */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-text-secondary">{t("ticket.hasTicket")}</span>
+              <span className="text-sm text-text-secondary">티켓 보유 여부</span>
               <span className="text-sm font-medium text-text-primary">
-                {t("ticket.inPossession")}
+                현재 티켓 보유 중
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-text-secondary">{t("ticket.pricePerTicket")}</span>
+              <span className="text-sm text-text-secondary">한 매 가격</span>
               <div className="text-right">
                 {ticket.askingPrice !== ticket.originalPrice && (
                   <span className="text-sm text-accent-red line-through mr-1">
@@ -184,15 +182,15 @@ export default function TicketDetailPage({
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-text-secondary">{t("ticket.quantity")}</span>
+              <span className="text-sm text-text-secondary">수량</span>
               <span className="text-sm font-medium text-text-primary">
-                {ticket.quantity}{t("ticket.unit")}
-                {ticket.isConsecutive && `(${t("popular.consecutive")})`}
+                {ticket.quantity}매
+                {ticket.isConsecutive && "(연석)"}
               </span>
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm font-medium text-text-primary">
-                {t("ticket.totalPrice")}
+                총 가격
               </span>
               <span className="text-2xl font-bold text-accent-red">
                 {formatPrice(ticket.askingPrice * ticket.quantity)}
@@ -206,7 +204,7 @@ export default function TicketDetailPage({
       {ticket.description && (
         <Card className="mb-4">
           <h3 className="text-sm font-bold text-text-primary mb-2">
-            {t("ticket.sellerDesc")}
+            판매자 설명
           </h3>
           <p className="text-sm text-text-secondary leading-relaxed">
             {ticket.description}
@@ -216,7 +214,7 @@ export default function TicketDetailPage({
 
       {/* Seller info */}
       <Card className="mb-4">
-        <h3 className="text-sm font-bold text-text-primary mb-3">{t("ticket.sellerInfo")}</h3>
+        <h3 className="text-sm font-bold text-text-primary mb-3">판매자 정보</h3>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold">
             {ticket.sellerNickname[0]}
@@ -226,7 +224,7 @@ export default function TicketDetailPage({
               {ticket.sellerNickname}
             </p>
             <p className="text-xs text-text-secondary">
-              {t("ticket.trust")} ⭐ {ticket.sellerTrustScore}
+              신뢰도 ⭐ {ticket.sellerTrustScore}
             </p>
           </div>
         </div>
@@ -235,7 +233,7 @@ export default function TicketDetailPage({
       {/* View count */}
       <div className="text-right mb-4">
         <span className="text-xs text-text-secondary">
-          {t("ticket.views")} {ticket.viewCount}
+          조회 {ticket.viewCount}
         </span>
       </div>
 
@@ -247,7 +245,7 @@ export default function TicketDetailPage({
           className="flex-shrink-0"
           onClick={handleCompare}
         >
-          {isInCompare ? t("ticket.comparing") : t("ticket.addCompare")}
+          {isInCompare ? "✓ 비교중" : "+ 비교담기"}
         </Button>
         <Button
           size="lg"
@@ -255,7 +253,7 @@ export default function TicketDetailPage({
           className="flex-1"
           onClick={() => setShowPayment(true)}
         >
-          {t("ticket.buy")}
+          구매하기
         </Button>
       </div>
 

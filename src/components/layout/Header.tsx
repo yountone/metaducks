@@ -1,81 +1,19 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, Globe, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/constants";
-import { useTranslation, LOCALES, type Locale } from "@/lib/i18n";
+
+const NAV_ITEMS = [
+  { label: "티켓", href: ROUTES.TICKETS },
+  { label: "멤버십", href: ROUTES.MEMBERSHIP },
+  { label: "커뮤니티", href: ROUTES.COMMUNITY },
+];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [langOpen, setLangOpen] = useState(false);
-  const langRef = useRef<HTMLDivElement>(null);
-  const { locale, setLocale, t } = useTranslation();
-
-  const currentLocale = LOCALES.find((l) => l.value === locale)!;
-
-  // Close language dropdown on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
-        setLangOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  const NAV_ITEMS = [
-    { label: t("nav.tickets"), href: ROUTES.TICKETS },
-    { label: t("nav.membership"), href: ROUTES.MEMBERSHIP },
-    { label: t("nav.community"), href: ROUTES.COMMUNITY },
-  ];
-
-  const LanguageSelector = ({ mobile }: { mobile?: boolean }) => (
-    <div ref={mobile ? undefined : langRef} className="relative">
-      <button
-        onClick={() => setLangOpen(!langOpen)}
-        className={`flex items-center gap-1.5 text-sm transition-colors ${
-          mobile
-            ? "text-text-primary py-3"
-            : "text-text-secondary hover:text-text-primary"
-        }`}
-      >
-        <Globe className="w-4 h-4" />
-        <span>{currentLocale.flag} {currentLocale.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${langOpen ? "rotate-180" : ""}`} />
-      </button>
-
-      {langOpen && (
-        <div
-          className={`${
-            mobile
-              ? "relative mt-1 border border-border rounded-lg"
-              : "absolute right-0 mt-2 w-40 border border-border rounded-lg shadow-lg"
-          } bg-white py-1 z-50`}
-        >
-          {LOCALES.map((loc) => (
-            <button
-              key={loc.value}
-              onClick={() => {
-                setLocale(loc.value);
-                setLangOpen(false);
-              }}
-              className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-surface transition-colors ${
-                locale === loc.value
-                  ? "text-primary font-medium"
-                  : "text-text-primary"
-              }`}
-            >
-              <span>{loc.flag}</span>
-              <span>{loc.label}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 
   return (
     <>
@@ -109,17 +47,16 @@ export function Header() {
           <div className="flex-1" />
 
           {/* Desktop right nav */}
-          <nav className="hidden md:flex items-center gap-4 shrink-0">
-            <LanguageSelector />
+          <nav className="hidden md:flex items-center gap-3 shrink-0">
             <Link
               href={ROUTES.LOGIN}
               className="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
-              {t("nav.login")}
+              로그인 / 회원가입
             </Link>
             <Link href={ROUTES.TICKET_NEW}>
               <Button size="sm" variant="secondary" className="rounded-lg">
-                {t("nav.sell")}
+                판매등록
               </Button>
             </Link>
           </nav>
@@ -138,10 +75,13 @@ export function Header() {
       {/* Mobile menu overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[60] md:hidden">
+          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/20"
             onClick={() => setMobileMenuOpen(false)}
           />
+
+          {/* Menu panel */}
           <div className="absolute inset-0 bg-white flex flex-col">
             {/* Header */}
             <div className="px-4 h-14 flex items-center justify-between border-b border-border">
@@ -165,7 +105,7 @@ export function Header() {
             </div>
 
             {/* Nav links */}
-            <nav className="flex-1 px-4 pt-4 overflow-y-auto">
+            <nav className="flex-1 px-4 pt-4">
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.href}
@@ -176,25 +116,22 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
+
+              {/* Additional links */}
               <Link
                 href={ROUTES.TICKET_NEW}
                 onClick={() => setMobileMenuOpen(false)}
                 className="block py-4 text-lg font-medium text-text-primary border-b border-border hover:text-primary transition-colors"
               >
-                {t("nav.sell")}
+                판매등록
               </Link>
               <Link
                 href={ROUTES.MYPAGE}
                 onClick={() => setMobileMenuOpen(false)}
                 className="block py-4 text-lg font-medium text-text-primary border-b border-border hover:text-primary transition-colors"
               >
-                {t("nav.mypage")}
+                마이페이지
               </Link>
-
-              {/* Language selector in mobile */}
-              <div className="py-4 border-b border-border">
-                <LanguageSelector mobile />
-              </div>
             </nav>
 
             {/* Bottom CTA */}
@@ -204,7 +141,7 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Button className="w-full" size="lg">
-                  {t("nav.login")}
+                  로그인 / 회원가입
                 </Button>
               </Link>
             </div>

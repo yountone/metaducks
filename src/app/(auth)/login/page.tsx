@@ -3,11 +3,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/constants";
-import { useTranslation } from "@/lib/i18n";
 
 export default function LoginPage() {
-  const { t } = useTranslation();
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
       {/* Logo */}
@@ -15,7 +12,7 @@ export default function LoginPage() {
         <span className="text-5xl">🦆</span>
         <h1 className="text-2xl font-bold text-foreground mt-2">METADUCKS</h1>
         <p className="text-sm text-text-secondary mt-1">
-          {t("login.subtitle")}
+          안전한 뮤지컬 티켓 양도 플랫폼
         </p>
       </div>
 
@@ -25,7 +22,7 @@ export default function LoginPage() {
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.76 1.84 5.19 4.6 6.56-.2.76-.73 2.75-.84 3.18-.13.53.2.52.41.38.17-.11 2.67-1.82 3.75-2.56.69.1 1.39.15 2.08.15 5.52 0 10-3.48 10-7.72S17.52 3 12 3z" />
           </svg>
-          {t("login.kakao")}
+          카카오로 시작하기
         </button>
 
         <button className="w-full h-12 flex items-center justify-center gap-2 bg-white text-text-primary font-medium rounded-lg border border-border hover:bg-surface transition-colors">
@@ -47,14 +44,14 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          {t("login.google")}
+          Google로 시작하기
         </button>
 
         <button className="w-full h-12 flex items-center justify-center gap-2 bg-black text-white font-medium rounded-lg hover:bg-black/90 transition-colors">
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.51-3.23 0-1.44.64-2.2.52-3.06-.4C3.79 16.17 4.36 9.02 8.67 8.76c1.28.06 2.15.72 2.91.78.99-.2 1.94-.78 3-.84 1.28-.07 2.38.35 3.13 1.21-2.92 1.68-2.24 5.35.49 6.38-.6 1.54-1.36 3.05-2.46 4.61l1.31-1.62zM12.03 8.7c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
           </svg>
-          {t("login.apple")}
+          Apple로 시작하기
         </button>
       </div>
 
@@ -65,25 +62,28 @@ export default function LoginPage() {
             <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-2 text-text-secondary">{t("login.or")}</span>
+            <span className="bg-white px-2 text-text-secondary">또는</span>
           </div>
         </div>
 
         <button className="w-full h-12 mt-4 flex items-center justify-center gap-2 bg-primary/5 text-primary font-medium rounded-lg border border-primary/20 hover:bg-primary/10 transition-colors">
-          🦊 {t("login.wallet")}
+          🦊 MetaMask / WalletConnect로 연결
         </button>
       </div>
 
       {/* Footer */}
       <p className="mt-8 text-xs text-text-secondary text-center">
-        {t("login.terms")}
+        로그인 시{" "}
+        <span className="underline cursor-pointer">서비스 이용약관</span> 및{" "}
+        <span className="underline cursor-pointer">개인정보 처리방침</span>에
+        동의합니다.
       </p>
 
       <Link
         href={ROUTES.HOME}
         className="mt-4 text-sm text-text-secondary hover:text-primary"
       >
-        {t("login.backHome")}
+        ← 홈으로 돌아가기
       </Link>
     </div>
   );

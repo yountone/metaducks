@@ -8,13 +8,11 @@ import { Card } from "@/components/ui/Card";
 import { POST_CATEGORIES, ROUTES } from "@/constants";
 import { formatRelativeTime } from "@/lib/utils";
 import { usePosts } from "@/hooks/useCommunity";
-import { useTranslation } from "@/lib/i18n";
 
 const categoryLabel = (value: string) =>
   POST_CATEGORIES.find((c) => c.value === value)?.label || value;
 
 export default function CommunityPage() {
-  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const { data, isLoading, isError } = usePosts(
     activeCategory !== "ALL" ? activeCategory : undefined
@@ -26,11 +24,11 @@ export default function CommunityPage() {
     <div className="max-w-3xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-text-primary">{t("community.title")}</h1>
+        <h1 className="text-xl font-bold text-text-primary">커뮤니티</h1>
         <Link href={ROUTES.POST_NEW}>
           <Button size="sm">
             <Plus className="w-4 h-4 mr-1" />
-            {t("community.write")}
+            글쓰기
           </Button>
         </Link>
       </div>
@@ -45,7 +43,7 @@ export default function CommunityPage() {
               : "bg-surface text-text-secondary hover:bg-border"
           }`}
         >
-          {t("community.all")}
+          전체
         </button>
         {POST_CATEGORIES.map((cat) => (
           <button
@@ -73,7 +71,7 @@ export default function CommunityPage() {
       {isError && (
         <div className="text-center py-12">
           <p className="text-text-secondary text-sm">
-            {t("community.error")}
+            게시글을 불러오는 중 오류가 발생했습니다
           </p>
         </div>
       )}
@@ -82,7 +80,7 @@ export default function CommunityPage() {
       {!isLoading && !isError && posts.length === 0 && (
         <div className="text-center py-12">
           <p className="text-text-secondary text-sm">
-            {t("community.empty")}
+            아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!
           </p>
         </div>
       )}

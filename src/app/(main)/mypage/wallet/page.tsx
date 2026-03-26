@@ -10,10 +10,8 @@ import { useWallet } from "@/hooks/useWallet";
 import { useAllTokenBalances } from "@/hooks/useTokenBalance";
 import { shortenAddress } from "@/lib/utils";
 import type { TokenSymbol } from "@/lib/web3";
-import { useTranslation } from "@/lib/i18n";
 
 export default function WalletPage() {
-  const { t } = useTranslation();
   const {
     address,
     isConnected,
@@ -48,19 +46,19 @@ export default function WalletPage() {
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-xl font-bold text-text-primary">{t("wallet.title")}</h1>
+        <h1 className="text-xl font-bold text-text-primary">지갑 관리</h1>
       </div>
 
       {!isConnected ? (
         <div className="text-center py-12">
           <span className="text-5xl">🦊</span>
           <h2 className="text-lg font-bold text-text-primary mt-4 mb-2">
-            {t("wallet.connect")}
+            지갑을 연결해주세요
           </h2>
           <p className="text-sm text-text-secondary mb-6">
-            {t("wallet.connectDesc")}
+            크립토 결제를 위해 지갑 연결이 필요합니다
             <br />
-            {t("wallet.bscNote")}
+            BSC(BNB Smart Chain) 네트워크를 사용합니다
           </p>
 
           <div className="max-w-sm mx-auto space-y-3">
@@ -73,7 +71,7 @@ export default function WalletPage() {
               <div className="text-left">
                 <p className="font-medium text-text-primary">MetaMask</p>
                 <p className="text-xs text-text-secondary">
-                  {t("wallet.browser")}
+                  브라우저 확장 프로그램
                 </p>
               </div>
               {isConnecting && (
@@ -89,7 +87,7 @@ export default function WalletPage() {
               <div className="text-left">
                 <p className="font-medium text-text-primary">WalletConnect</p>
                 <p className="text-xs text-text-secondary">
-                  {t("wallet.qr")}
+                  QR코드로 모바일 지갑 연결
                 </p>
               </div>
             </button>
@@ -100,9 +98,9 @@ export default function WalletPage() {
           {/* Connected info */}
           <Card>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-text-primary">{t("wallet.connected")}</h3>
+              <h3 className="font-bold text-text-primary">연결된 지갑</h3>
               <Badge variant={isCorrectChain ? "verified" : "default"}>
-                {isCorrectChain ? t("wallet.bscConnected") : t("wallet.chainSwitch")}
+                {isCorrectChain ? "BSC 연결됨" : "체인 전환 필요"}
               </Badge>
             </div>
             <div className="flex items-center gap-2 p-2 bg-surface rounded-lg">
@@ -130,14 +128,14 @@ export default function WalletPage() {
                 size="sm"
                 onClick={ensureBscChain}
               >
-                {t("wallet.switchBsc")}
+                BSC 네트워크로 전환
               </Button>
             )}
           </Card>
 
           {/* Token balances */}
           <Card>
-            <h3 className="font-bold text-text-primary mb-3">{t("wallet.tokenBalance")}</h3>
+            <h3 className="font-bold text-text-primary mb-3">토큰 잔액</h3>
             <div className="space-y-2">
               {PAYMENT_TOKENS.map((token, idx) => {
                 const tokenBalance = balances[token.value as TokenSymbol];
@@ -166,7 +164,7 @@ export default function WalletPage() {
           </Card>
 
           <Button variant="outline" className="w-full" onClick={disconnect}>
-            {t("wallet.disconnect")}
+            지갑 연결 해제
           </Button>
         </div>
       )}

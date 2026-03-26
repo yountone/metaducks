@@ -8,7 +8,6 @@ import { PAYMENT_TOKENS } from "@/constants";
 import { useWallet } from "@/hooks/useWallet";
 import { useAllTokenBalances } from "@/hooks/useTokenBalance";
 import { usePayment, type PaymentStatus } from "@/hooks/usePayment";
-import { useTranslation } from "@/lib/i18n";
 import type { TokenSymbol } from "@/lib/web3";
 
 interface PaymentModalProps {
@@ -19,6 +18,16 @@ interface PaymentModalProps {
   onPaymentSuccess?: (txHash: string, method: string) => void;
 }
 
+const STATUS_MESSAGES: Record<PaymentStatus, string> = {
+  idle: "",
+  approving: "토큰 승인 중...",
+  approved: "승인 완료, 전송 준비 중...",
+  transferring: "토큰 전송 중...",
+  confirming: "트랜잭션 확인 대기 중...",
+  success: "결제 완료!",
+  error: "결제 실패",
+};
+
 export function PaymentModal({
   isOpen,
   onClose,
@@ -26,19 +35,8 @@ export function PaymentModal({
   title,
   onPaymentSuccess,
 }: PaymentModalProps) {
-  const { t } = useTranslation();
   const [tab, setTab] = useState<"crypto" | "card">("crypto");
   const [selectedToken, setSelectedToken] = useState<TokenSymbol>("XPASS");
-
-  const STATUS_MESSAGES: Record<PaymentStatus, string> = {
-    idle: "",
-    approving: t("payment.approving"),
-    approved: t("payment.approved"),
-    transferring: t("payment.transferring"),
-    confirming: t("payment.confirming"),
-    success: t("payment.success"),
-    error: t("payment.failed"),
-  };
 
   const {
     address,
@@ -104,7 +102,7 @@ export function PaymentModal({
       <div className="relative w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-border px-4 py-3 flex items-center justify-between rounded-t-2xl">
-          <h2 className="font-bold text-text-primary">{t("payment.title")}</h2>
+          <h2 className="font-bold text-text-primary">결제하기</h2>
           <button
             onClick={onClose}
             className="p-1 hover:bg-surface rounded"
@@ -132,7 +130,7 @@ export function PaymentModal({
             }`}
           >
             <Wallet className="w-4 h-4" />
-            {t("payment.crypto")}
+            크립토 결제
           </button>
           <button
             onClick={() => setTab("card")}
@@ -143,7 +141,7 @@ export function PaymentModal({
             }`}
           >
             <CreditCard className="w-4 h-4" />
-            {t("payment.card")}
+            카드 결제
           </button>
         </div>
 
@@ -154,14 +152,14 @@ export function PaymentModal({
               {paymentStatus === "success" && (
                 <div className="p-4 bg-success/5 border border-success/20 rounded-lg text-center">
                   <CheckCircle className="w-8 h-8 text-success mx-auto mb-2" />
-                  <p className="font-bold text-text-primary">{t("payment.success")}</p>
+                  <p className="font-bold text-text-primary">결제 완료!</p>
                   {txHash && (
                     <p className="text-xs text-text-secondary mt-1 font-mono break-all">
                       TX: {shortenAddress(txHash)}
                     </p>
                   )}
                   <Button className="mt-3" size="sm" onClick={onClose}>
-                    {t("payment.confirm")}
+                    확인
                   </Button>
                 </div>
               )}
@@ -170,7 +168,7 @@ export function PaymentModal({
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
                     <AlertCircle className="w-4 h-4 text-accent-red" />
-                    <p className="font-medium text-text-primary text-sm">{t("payment.failed")}</p>
+                    <p className="font-medium text-text-primary text-sm">결제 실패</p>
                   </div>
                   <p className="text-xs text-text-secondary">{paymentError}</p>
                   <Button
@@ -179,7 +177,7 @@ export function PaymentModal({
                     variant="outline"
                     onClick={resetPayment}
                   >
-                    {t("payment.retry")}
+                    다시 시도
                   </Button>
                 </div>
               )}
@@ -190,7 +188,7 @@ export function PaymentModal({
                   {!isConnected ? (
                     <div className="space-y-3">
                       <p className="text-sm text-text-secondary mb-3">
-                        {t("payment.connectWallet")}
+                        지갑을 연결해주세요
                       </p>
                       <button
                         onClick={() => handleConnect("metamask")}
@@ -221,7 +219,7 @@ export function PaymentModal({
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-success" />
                           <span className="text-xs text-text-primary">
-                            {isCorrectChain ? t("wallet.bscConnected") : t("wallet.chainSwitch")}
+                            {isCorrectChain ? "BSC 연결됨" : "체인 전환 필요"}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -232,7 +230,7 @@ export function PaymentModal({
                             onClick={disconnect}
                             className="text-xs text-text-secondary hover:text-accent-red"
                           >
-                            {t("payment.disconnect")}
+                            해제
                           </button>
                         </div>
                       </div>
@@ -243,7 +241,7 @@ export function PaymentModal({
                           variant="outline"
                           onClick={ensureBscChain}
                         >
-                          {t("wallet.switchBsc")}
+                          BSC 네트워크로 전환
                         </Button>
                       )}
 
@@ -252,7 +250,7 @@ export function PaymentModal({
                           {/* Token selection */}
                           <div>
                             <p className="text-sm font-medium text-text-primary mb-2">
-                              {t("payment.selectToken")}
+                              결제 토큰 선택
                             </p>
                             <div className="space-y-2">
                               {PAYMENT_TOKENS.map((token) => {
@@ -280,7 +278,7 @@ export function PaymentModal({
                                       </span>
                                     </div>
                                     <span className="text-xs text-text-secondary">
-                                      {t("payment.balance")}:{" "}
+                                      잔액:{" "}
                                       {tokenBalance.isLoading
                                         ? "..."
                                         : tokenBalance.formatted}
@@ -294,7 +292,7 @@ export function PaymentModal({
                           {/* Insufficient balance warning */}
                           {insufficientBalance && (
                             <p className="text-xs text-accent-red">
-                              {t("payment.insufficient")}
+                              잔액이 부족합니다. 다른 토큰을 선택해주세요.
                             </p>
                           )}
 
@@ -316,8 +314,8 @@ export function PaymentModal({
                             disabled={isProcessing || insufficientBalance}
                           >
                             {isProcessing
-                              ? t("payment.processing")
-                              : `${selectedToken}${t("payment.payWith")}`}
+                              ? "처리 중..."
+                              : `${selectedToken}로 결제하기`}
                           </Button>
                         </>
                       )}
@@ -329,16 +327,16 @@ export function PaymentModal({
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-text-secondary">
-                {t("payment.cardDesc")}
+                카드 결제는 Stripe를 통해 안전하게 처리됩니다.
               </p>
               <div className="p-6 border border-border rounded-lg text-center">
                 <CreditCard className="w-8 h-8 text-text-secondary mx-auto mb-2" />
                 <p className="text-sm text-text-secondary">
-                  {t("payment.stripeRedirect")}
+                  Stripe Checkout으로 이동합니다
                 </p>
               </div>
               <Button className="w-full" size="lg" variant="secondary">
-                {t("payment.cardPay")} ({formatPrice(amount)})
+                카드로 결제하기 ({formatPrice(amount)})
               </Button>
             </div>
           )}
@@ -346,8 +344,10 @@ export function PaymentModal({
 
         {/* Footer notice */}
         <div className="px-4 pb-4">
-          <p className="text-[10px] text-text-secondary text-center leading-relaxed whitespace-pre-line">
-            {t("payment.footer")}
+          <p className="text-[10px] text-text-secondary text-center leading-relaxed">
+            결제는 싱가포르 법인(MetaDucks Pte. Ltd.)을 통해 처리됩니다.
+            <br />
+            크립토 결제 시 BSC(BNB Smart Chain) 네트워크가 사용됩니다.
           </p>
         </div>
       </div>
